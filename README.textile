@@ -1,0 +1,49 @@
+h1. Spatula
+
+Spatula is a command line helper app for use with
+"Chef":http://www.opscode.com/chef. It currently lets you search and install
+cookbooks from http://cookbooks.opscode.com.  It does not yet implement the
+full API, but that will be coming in future versions (as I need it). If you
+need it to support the full API *right now*, please make it do so and send me a
+pull request :-)
+
+Spatula is really, really alpha. It does not handle errors at all, but it works
+pretty well given that you hand it the correct input. Please give it a try and
+pretty please fork it and make it better.
+
+h1. Usage
+
+Spatula currently supports 3 commands: search, show, and install.
+
+<pre>
+$ ruby spatula.rb search apache2
+apache2 Installs and configures all aspects of apache2 using Debian style symlinks with helper definitions
+... more output ...
+
+$ ruby spatula.rb show apache2
+name:   apache2
+average_rating: 
+category:       Web Servers
+created_at:     2009-10-25T23:47:55Z
+updated_at:     2009-10-25T23:47:55Z
+maintainer:     jtimberman
+latest_version: http://cookbooks.opscode.com/api/v1/cookbooks/apache2/versions/0_9_1
+external_url:   
+versions:       http://cookbooks.opscode.com/api/v1/cookbooks/apache2/versions/0_9_1
+description:    Installs and configures all aspects of apache2 using Debian style symlinks with helper definitions
+
+$ ruby spatula.rb install apache2
+... downloads the apache2 cookbook and installs it into $(pwd)/cookbooks ...
+... also creates a $(pwd)/cookbook_tarballs dir to store the download ...
+</pre>
+
+h1. About
+
+h2. Official Repo
+
+http://github.com/trotter/spatula
+
+h2. Author
+
+Trotter Cashion
+
