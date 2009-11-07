@@ -4,16 +4,26 @@ Spatula is a command line helper app for use with "Chef":http://www.opscode.com/
 
 Spatula is really, really alpha. It does not handle errors at all, but it works pretty well given that you hand it the correct input. Please give it a try and pretty please fork it and make it better.  
 
+h1. Installation
+
+You can get spatula from gemcutter.
+
+<pre>
+# Gemcutter:
+# Follow the instructions on http://gemcutter.org/ then...
+gem install spatula 
+</pre>
+
 h1. Usage
 
 Spatula currently supports 3 commands: search, show, and install.
 
 <pre>
-$ ruby spatula.rb search apache2
+$ spatula search apache2
 apache2 Installs and configures all aspects of apache2 using Debian style symlinks with helper definitions
 ... more output ...
 
-$ ruby spatula.rb show apache2
+$ spatula show apache2
 name:   apache2
 average_rating: 
 category:       Web Servers
@@ -25,7 +35,7 @@ external_url:
 versions:       http://cookbooks.opscode.com/api/v1/cookbooks/apache2/versions/0_9_1
 description:    Installs and configures all aspects of apache2 using Debian style symlinks with helper definitions
 
-$ ruby spatula.rb install apache2
+$ spatula install apache2
 ... downloads the apache2 cookbook and installs it into $(pwd)/cookbooks ...
 ... also creates a $(pwd)/cookbook_tarballs dir to store the download ...
 </pre>

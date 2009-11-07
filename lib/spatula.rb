@@ -6,6 +6,11 @@ require 'json'
 class Spatula
   BASE_URL = "http://cookbooks.opscode.com/api/v1"
 
+  def self.run
+    command = ARGV.shift
+    Spatula.new.send(command, *ARGV)
+  end
+
   # Search for cookbooks matching :query:
   def search(query, start=0, items=10)
     url = URI.parse("%s/search?q=%s&start=%s&items=%s" % [BASE_URL, query, start, items])
@@ -56,6 +61,5 @@ class Spatula
 end
 
 if __FILE__ == $0
-  command = ARGV.shift
-  Spatula.new.send(command, *ARGV)
+  Spatula.run
 end

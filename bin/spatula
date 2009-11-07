@@ -1,4 +1,11 @@
-#!/bin/sh
+#!/usr/bin/env ruby
 
-BASEDIR=$(dirname $0)
-ruby "$BASEDIR/../lib/spatula.rb" $@
+begin
+  require 'spatula'
+rescue LoadError
+  require 'rubygems'
+  require 'spatula'
+end
+
+Spatula.run
+
