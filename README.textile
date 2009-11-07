@@ -1,15 +1,8 @@
 h1. Spatula
 
-Spatula is a command line helper app for use with
-"Chef":http://www.opscode.com/chef. It currently lets you search and install
-cookbooks from http://cookbooks.opscode.com.  It does not yet implement the
-full API, but that will be coming in future versions (as I need it). If you
-need it to support the full API *right now*, please make it do so and send me a
-pull request :-)
+Spatula is a command line helper app for use with "Chef":http://www.opscode.com/chef. It currently lets you search and install cookbooks from http://cookbooks.opscode.com.  It does not yet implement the full API, but that will be coming in future versions (as I need it). If you need it to support the full API *right now*, please make it do so and send me a pull request :-)
 
-Spatula is really, really alpha. It does not handle errors at all, but it works
-pretty well given that you hand it the correct input. Please give it a try and
-pretty please fork it and make it better.
+Spatula is really, really alpha. It does not handle errors at all, but it works pretty well given that you hand it the correct input. Please give it a try and pretty please fork it and make it better.  
 
 h1. Usage
 
