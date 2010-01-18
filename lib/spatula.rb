@@ -21,9 +21,6 @@ module Spatula
       end
     end
 
-    def search(query, start=0, items=10)
-    end
-
     # Show the cookbook named :name:
     def show(name)
       print_response(get_cookbook_info(name))
@@ -42,9 +39,6 @@ module Spatula
       FileUtils.mkdir_p("cookbook_tarballs")
       `curl #{file} -o cookbook_tarballs/#{filename}`
       `tar xzvf cookbook_tarballs/#{filename} -C cookbooks`
-    end
-
-    def prepare(server)
     end
 
     private
