@@ -4,7 +4,7 @@ module Spatula
     Spatula::Spatula.register("search", self)
 
     def self.run(*args)
-      new(args).run
+      new(*args).run
     end
 
     def initialize(query, start=0, count=10)
