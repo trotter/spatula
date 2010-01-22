@@ -127,7 +127,8 @@ module Spatula
 end
 
 require 'spatula/search'
+require 'spatula/prepare'
 
 if __FILE__ == $0
-  Spatula.run
+  Spatula::Spatula.run
 end
