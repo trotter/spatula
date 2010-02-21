@@ -4,8 +4,9 @@ require 'uri'
 require 'json'
 
 module Spatula
+  BASE_URL = "http://cookbooks.opscode.com/api/v1"
+
   class Spatula
-    BASE_URL = "http://cookbooks.opscode.com/api/v1"
     @commands = {}
 
     def self.register(command, klass)
@@ -128,6 +129,7 @@ end
 
 require 'spatula/search'
 require 'spatula/prepare'
+require 'spatula/cook'
 
 if __FILE__ == $0
   Spatula::Spatula.run
