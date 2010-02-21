@@ -1,4 +1,5 @@
 module Spatula
+  # TODO: Set REMOTE_CHEF_PATH using value for file_cache_path
   REMOTE_CHEF_PATH = "/tmp/chef-solo" # Where to find upstream cookbooks
 
   class Cook
@@ -16,8 +17,8 @@ module Spatula
 
     def run
       sh "rake test"
-      sh "rsync -rlP --delete --exclude '.*' ./ #@server:#{REMOTE_CHEF_PATH}"
-      sh "ssh -t -p #@port -A #@server \"cd #{REMOTE_CHEF_PATH}; /var/lib/gems/1.8/bin/chef-solo -c config/solo.rb -j config/#@node.json \""
+      sh "rsync -rlP --rsh=\"ssh -p#@port\" --delete --exclude '.*' ./ #@server:#{REMOTE_CHEF_PATH}"
+      sh "ssh -t -p #@port -A #@server \"cd #{REMOTE_CHEF_PATH}; sudo /var/lib/gems/1.8/bin/chef-solo -c config/solo.rb -j config/#@node.json \""
     end
 
     private
