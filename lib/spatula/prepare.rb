@@ -13,12 +13,16 @@ module Spatula
     end
 
     def ssh command
-      sh %Q|ssh -t -p #@port #@server #{command}|
+      sh %Q|ssh -t -p #@port #@server "#{command.gsub('"', '\\"')}"|
     end
 
     def run
       ssh "sudo apt-get update"
-      ssh "sudo aptitude -y install ruby rubygems rubygems1.8 irb ri libopenssl-ruby1.8 libshadow-ruby1.8 ruby1.8-dev gcc g++ rsync"
+      ssh "sudo aptitude -y install ruby irb ri libopenssl-ruby1.8 libshadow-ruby1.8 ruby1.8-dev gcc g++ rsync"
+      ssh "curl -L 'http://rubyforge.org/frs/download.php/69365/rubygems-1.3.6.tgz' | tar xvzf -"
+      ssh "cd rubygems* && sudo ruby setup.rb --no-ri --no-rdoc"
+      ssh "sudo ln -sfv /usr/bin/gem1.8 /usr/bin/gem"
+
       ssh "sudo gem install rdoc chef ohai --no-ri --no-rdoc --source http://gems.opscode.com --source http://gems.rubyforge.org"
     end
 
