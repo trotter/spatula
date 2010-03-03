@@ -23,9 +23,7 @@ module Spatula
 
     private
       def sh(command)
-        stdout = `#{command}`
-        puts stdout
-        stdout
+        system command
       end
   end
 end
