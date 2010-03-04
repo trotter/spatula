@@ -18,7 +18,7 @@ module Spatula
     def run
       sh "rake test"
       sh "rsync -rlP --rsh=\"ssh -p#@port\" --delete --exclude '.*' ./ #@server:#{REMOTE_CHEF_PATH}"
-      sh "ssh -t -p #@port -A #@server \"cd #{REMOTE_CHEF_PATH}; sudo /var/lib/gems/1.8/bin/chef-solo -c config/solo.rb -j config/#@node.json \""
+      sh "ssh -t -p #@port -A #@server \"cd #{REMOTE_CHEF_PATH}; sudo chef-solo -c config/solo.rb -j config/#@node.json \""
     end
 
     private
