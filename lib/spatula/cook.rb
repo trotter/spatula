@@ -3,8 +3,6 @@ module Spatula
   REMOTE_CHEF_PATH = "/tmp/chef-solo" # Where to find upstream cookbooks
 
   class Cook
-    Spatula.register("cook", self)
-
     def self.run(*args)
       new(*args).run
     end

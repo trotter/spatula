@@ -1,8 +1,6 @@
 # Search for cookbooks matching :query:
 module Spatula
   class Search
-    Spatula.register("search", self)
-
     def self.run(*args)
       new(*args).run
     end

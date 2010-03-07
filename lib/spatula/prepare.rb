@@ -1,8 +1,6 @@
 # Prepare :server: for chef solo to run on it
 module Spatula
   class Prepare
-    Spatula.register("prepare", self)
-
     def self.run(*args)
       new(*args).run
     end
