@@ -7,5 +7,5 @@ rescue LoadError
   require 'spatula'
 end
 
-Spatula::Spatula.run
+Spatula::Spatula.start
 
