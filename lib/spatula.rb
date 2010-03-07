@@ -23,9 +23,10 @@ module Spatula
       file = JSON.parse(get_version_info(name))["file"]
       filename = File.basename(file)
       # Use ENV['HOME'] as the base here 
-      FileUtils.mkdir_p("cookbook_tarballs")
-      `curl #{file} -o cookbook_tarballs/#{filename}`
-      `tar xzvf cookbook_tarballs/#{filename} -C cookbooks`
+      tarball_dir = "#{ENV['HOME']}/.spatula/cookbook_tarballs"
+      FileUtils.mkdir_p(tarball_dir)
+      system "curl #{file} -o #{tarball_dir}"
+      system "tar xzvf #{tarball_dir}/#{filename} -C cookbooks"
     end
 
     desc "search QUERY", "Search cookbooks.opscode.com for cookbooks matching QUERY"
