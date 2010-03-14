@@ -18,11 +18,19 @@ module Spatula
         ok = sh "ruby -c #{recipe} >/dev/null 2>&1"
         raise "Syntax error in #{recipe}" if not ok
       end
-      sh "rsync -rlP --rsh=\"ssh -p#@port\" --delete --exclude '.*' ./ #@server:#{REMOTE_CHEF_PATH}"
-      sh "ssh -t -p #@port -A #@server \"cd #{REMOTE_CHEF_PATH}; sudo chef-solo -c config/solo.rb -j config/#@node.json \""
+      if @server =~ /^local$/i
+        sh chef_cmd
+      else
+        sh "rsync -rlP --rsh=\"ssh -p#@port\" --delete --exclude '.*' ./ #@server:#{REMOTE_CHEF_PATH}"
+        sh "ssh -t -p #@port -A #@server \"cd #{REMOTE_CHEF_PATH}; #{chef_cmd} \""
+      end
     end
 
     private
+      def chef_cmd
+        "sudo chef-solo -c config/solo.rb -j config/#@node.json"
+      end
+
       def sh(command)
         system command
       end

@@ -35,7 +35,7 @@ module Spatula
       Search.run(query, options[:start], options[:count])
     end
 
-    desc "cook SERVER NODE", "Cook SERVER with the specification in config/NODE.js"
+    desc "cook SERVER NODE", "Cook SERVER with the specification in config/NODE.js. Use local as the server to cook this box."
     method_options :port => 22
     def cook(server, node)
       Cook.run(server, node, options[:port])
