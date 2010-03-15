@@ -7,7 +7,7 @@ module Spatula
       new(*args).run
     end
 
-    def initialize(server, node, port=22)
+    def initialize(server, node, port=nil)
       @server = server
       @node = node
       @port = port
@@ -18,8 +18,10 @@ module Spatula
         ok = sh "ruby -c #{recipe} >/dev/null 2>&1"
         raise "Syntax error in #{recipe}" if not ok
       end
-      sh "rsync -rlP --rsh=\"ssh -p#@port\" --delete --exclude '.*' ./ #@server:#{REMOTE_CHEF_PATH}"
-      sh "ssh -t -p #@port -A #@server \"cd #{REMOTE_CHEF_PATH}; sudo chef-solo -c config/solo.rb -j config/#@node.json \""
+
+      port_switch = @port ? " -p#@port" : ""
+      sh "rsync -rlP --rsh=\"ssh#{port_switch}\" --delete --exclude '.*' ./ #@server:#{REMOTE_CHEF_PATH}"
+      sh "ssh -t#{port_switch} -A #@server \"cd #{REMOTE_CHEF_PATH}; sudo chef-solo -c config/solo.rb -j config/#@node.json \""
     end
 
     private
