@@ -42,9 +42,11 @@ module Spatula
     end
 
     desc "prepare SERVER", "Install software/libs required by chef on SERVER"
-    method_options :port => nil
+    method_options :port     => nil
+    method_options :login    => nil
+    method_options :identity => nil
     def prepare(server)
-      Prepare.run(server, options[:port])
+      Prepare.run(server, options[:port], options[:login], options[:identity])
     end
 
     private

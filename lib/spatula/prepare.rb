@@ -5,14 +5,20 @@ module Spatula
       new(*args).run
     end
 
-    def initialize(server, port=nil)
+    def initialize(server, port=nil, login=nil, identity=nil)
       @server = server
       @port   = port
-      @port_switch = @port ? " -p #@port" : '' 
+      @port_switch = port ? " -p #{port}" : '' 
+      @login_switch = login ? "-l #{login}" : ''
+      @identity_switch = identity ? %Q|-i "#{identity}"| : ''
     end
 
-    def ssh command
-      sh %Q|ssh -t#@port_switch #@server "#{command.gsub('"', '\\"')}"|
+    def ssh(command)
+      sh ssh_command(command)
+    end
+
+    def ssh_command(command)
+      %Q|ssh -t#@port_switch #@login_switch #@identity_switch #@server "#{command.gsub('"', '\\"')}"|
     end
 
     def run
@@ -20,7 +26,7 @@ module Spatula
     end
 
     def os
-      etc_issue = `ssh -t#@port_switch #@server "cat /etc/issue"`
+      etc_issue = `#{ssh_command("cat /etc/issue")}`
       if etc_issue =~ /ubuntu/i
         "ubuntu"
       else
