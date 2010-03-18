@@ -1,3 +1,7 @@
+## THIS TEST WON'T WORK ON YOUR MACHINE
+## YOU NEED A VM THAT ONLY I HAVE RIGHT NOW
+## Sorry
+
 require 'test/unit'
 
 SPATULA_ROOT = File.dirname(__FILE__) + '/../..'
