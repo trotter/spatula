@@ -36,7 +36,7 @@ module Spatula
     end
 
     desc "cook SERVER NODE", "Cook SERVER with the specification in config/NODE.js. Use local as the server to cook this box."
-    method_options :port => 22
+    method_options :port => nil 
     def cook(server, node)
       Cook.run(server, node, options[:port])
     end
