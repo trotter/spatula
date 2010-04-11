@@ -25,7 +25,7 @@ module Spatula
       # Use ENV['HOME'] as the base here 
       tarball_dir = "#{ENV['HOME']}/.spatula/cookbook_tarballs"
       FileUtils.mkdir_p(tarball_dir)
-      system "curl #{file} -o #{tarball_dir}"
+      system "curl #{file} -o #{tarball_dir}/#{filename}"
       system "tar xzvf #{tarball_dir}/#{filename} -C cookbooks"
     end
 
