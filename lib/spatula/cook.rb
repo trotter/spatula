@@ -2,15 +2,10 @@ module Spatula
   # TODO: Set REMOTE_CHEF_PATH using value for file_cache_path
   REMOTE_CHEF_PATH = "/tmp/chef-solo" # Where to find upstream cookbooks
 
-  class Cook
-    def self.run(*args)
-      new(*args).run
-    end
-
-    def initialize(server, node, port=nil)
-      @server = server
+  class Cook < SshCommand
+    def initialize(server, node, port=nil, login=nil, identity=nil)
+      super(server, port, login, identity)
       @node = node
-      @port = port
     end
 
     def run
@@ -22,19 +17,14 @@ module Spatula
       if @server =~ /^local$/i
         sh chef_cmd
       else
-        port_switch = @port ? " -p#@port" : ""
-        sh "rsync -rlP --rsh=\"ssh#{port_switch}\" --delete --exclude '.*' ./ #@server:#{REMOTE_CHEF_PATH}"
-        sh "ssh -t#{port_switch} -A #@server \"cd #{REMOTE_CHEF_PATH}; #{chef_cmd} \""
+        sh "rsync -rlP --rsh=\"ssh #{ssh_opts}\" --delete --exclude '.*' ./ #@server:#{REMOTE_CHEF_PATH}"
+        ssh "cd #{REMOTE_CHEF_PATH}; #{chef_cmd}"
       end
     end
 
     private
       def chef_cmd
         "sudo chef-solo -c config/solo.rb -j config/#@node.json"
-      end
-
-      def sh(command)
-        system command
       end
   end
 end

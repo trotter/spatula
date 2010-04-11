@@ -37,8 +37,10 @@ module Spatula
 
     desc "cook SERVER NODE", "Cook SERVER with the specification in config/NODE.js. Use local as the server to cook this box."
     method_options :port => nil 
+    method_options :login    => nil
+    method_options :identity => nil
     def cook(server, node)
-      Cook.run(server, node, options[:port])
+      Cook.run(server, node, options[:port], options[:login], options[:identity])
     end
 
     desc "prepare SERVER", "Install software/libs required by chef on SERVER"
@@ -73,6 +75,7 @@ if __FILE__ == $0
   $: << File.dirname(__FILE__)
 end
 
+require 'spatula/ssh_command'
 require 'spatula/search'
 require 'spatula/prepare'
 require 'spatula/cook'
