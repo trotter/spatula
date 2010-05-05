@@ -12,6 +12,8 @@ $spec = Gem::Specification.new do |s|
   search and install cookbooks from http://cookbooks.opscode.com.
 EOS
   
+  s.add_dependency("thor", ">= 0.13.4")
+  s.add_dependency("json", ">= 1.2.4")
   s.files       = PKG_FILES.to_a
   s.bindir      = 'bin'
   s.executables = 'spatula'
