@@ -2,6 +2,7 @@
 module Spatula
   class Prepare < SshCommand
     def run
+      upload_ssh_key
       send "run_for_#{os}"
     end
 
@@ -35,6 +36,21 @@ module Spatula
       ssh 'cd ruby-enterprise-1.8.7-2010.02 && sudo echo -e "\n/usr\n" | ./installer'
 
       ssh "sudo gem install rdoc chef ohai --no-ri --no-rdoc --source http://gems.opscode.com --source http://gems.rubyforge.org"
+    end
+
+    def upload_ssh_key
+      authorized_file = "~/.ssh/authorized_keys"
+      key_file = nil
+      %w{rsa dsa}.each do |key_type|
+        filename = "#{ENV['HOME']}/.ssh/id_#{key_type}.pub"
+        if File.exists?(filename)
+          key_file = filename
+          break
+        end
+      end
+      key = File.open(key_file).read.split(' ')[0..1].join(' ')
+      ssh "mkdir -p .ssh && echo #{key} >> #{authorized_file}"
+      ssh "cat #{authorized_file} | sort | uniq > #{authorized_file}.tmp && mv #{authorized_file}.tmp #{authorized_file}"
     end
   end
 end
