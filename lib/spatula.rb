@@ -47,8 +47,9 @@ module Spatula
     method_options :port     => nil
     method_options :login    => nil
     method_options :identity => nil
+    method_options :upload_key => nil
     def prepare(server)
-      Prepare.run(server, options[:port], options[:login], options[:identity])
+      Prepare.run(server, options[:port], options[:login], options[:identity], options[:upload_key])
     end
 
     private

@@ -2,7 +2,7 @@
 module Spatula
   class Prepare < SshCommand
     def run
-      upload_ssh_key
+      upload_ssh_key if @upload_key
       send "run_for_#{os}"
     end
 

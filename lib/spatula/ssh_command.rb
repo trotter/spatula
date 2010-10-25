@@ -4,12 +4,13 @@ module Spatula
       new(*args).run
     end
 
-    def initialize(server, port=nil, login=nil, identity=nil)
+    def initialize(server, port=nil, login=nil, identity=nil, upload_key=nil)
       @server = server
       @port   = port
       @port_switch = port ? " -p #{port}" : '' 
       @login_switch = login ? "-l #{login}" : ''
       @identity_switch = identity ? %Q|-i "#{identity}"| : ''
+      @upload_key = upload_key
     end
 
     def ssh(command)
