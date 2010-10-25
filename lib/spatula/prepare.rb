@@ -13,8 +13,10 @@ module Spatula
         "ubuntu"
       when /debian/i
         "debian"
+      when /fedora/i
+        "fedora"
       else
-        raise "Sorry, we currently only support ubuntu & debian for preparing. Please fork http://github.com/trotter/spatula and add support for your OS. I'm happy to incorporate pull requests."
+        raise "Sorry, we currently only support prepare on ubuntu, debian & fedora. Please fork http://github.com/trotter/spatula and add support for your OS. I'm happy to incorporate pull requests."
       end
     end
 
@@ -36,6 +38,12 @@ module Spatula
       ssh 'cd ruby-enterprise-1.8.7-2010.02 && sudo echo -e "\n/usr\n" | ./installer'
 
       ssh "sudo gem install rdoc chef ohai --no-ri --no-rdoc --source http://gems.opscode.com --source http://gems.rubyforge.org"
+    end
+
+    def run_for_fedora
+      sudo = ssh('which sudo 2>/dev/null') ? 'sudo' : ''
+      ssh "#{sudo} yum install -y make gcc rubygems ruby-devel"
+      ssh "#{sudo} gem install chef --no-ri --no-rdoc"
     end
 
     def upload_ssh_key
