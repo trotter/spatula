@@ -15,6 +15,8 @@ module Spatula
         "debian"
       when /fedora/i
         "fedora"
+      when ""
+        raise "Couldn't get system info from /etc/issue. Please check your SSH credentials."
       else
         raise "Sorry, we currently only support prepare on ubuntu, debian & fedora. Please fork http://github.com/trotter/spatula and add support for your OS. I'm happy to incorporate pull requests."
       end
