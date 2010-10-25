@@ -42,7 +42,7 @@ module Spatula
 
     def run_for_fedora
       sudo = ssh('which sudo 2>/dev/null') ? 'sudo' : ''
-      ssh "#{sudo} yum install -y make gcc rubygems ruby-devel"
+      ssh "#{sudo} yum install -y make gcc rubygems ruby-devel sudo"
       ssh "#{sudo} gem install chef --no-ri --no-rdoc"
     end
 
