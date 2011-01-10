@@ -15,6 +15,8 @@ module Spatula
         "debian"
       when /fedora/i
         "fedora"
+      when /CentOS/i
+        "centos"
       when ""
         raise "Couldn't get system info from /etc/issue. Please check your SSH credentials."
       else
@@ -23,29 +25,47 @@ module Spatula
     end
 
     def run_for_ubuntu
-      ssh "sudo apt-get update"
-      ssh "sudo aptitude -y install ruby irb ri libopenssl-ruby1.8 libshadow-ruby1.8 ruby1.8-dev gcc g++ rsync curl"
-      ssh "curl -L 'http://rubyforge.org/frs/download.php/69365/rubygems-1.3.6.tgz' | tar xvzf -"
-      ssh "cd rubygems* && sudo ruby setup.rb --no-ri --no-rdoc"
-      ssh "sudo ln -sfv /usr/bin/gem1.8 /usr/bin/gem"
-
-      ssh "sudo gem install rdoc chef ohai --no-ri --no-rdoc --source http://gems.opscode.com --source http://gems.rubyforge.org"
+      ssh "#{sudo} apt-get update"
+      ssh "#{sudo} aptitude -y install ruby irb ri libopenssl-ruby1.8 libshadow-ruby1.8 ruby1.8-dev gcc g++ rsync curl"
+      install_rubygems
+      install_chef
     end
 
     def run_for_debian
-      ssh 'sudo apt-get update'
-      ssh 'sudo apt-get install -y build-essential zlib1g-dev libssl-dev libreadline5-dev curl rsync screen vim'
-      ssh 'curl -L http://rubyforge.org/frs/download.php/71096/ruby-enterprise-1.8.7-2010.02.tar.gz | tar xzvf -'
-      # install REE 1.8.7 (and rubygems and irb and rake) to /usr
-      ssh 'cd ruby-enterprise-1.8.7-2010.02 && sudo echo -e "\n/usr\n" | ./installer'
-
-      ssh "sudo gem install rdoc chef ohai --no-ri --no-rdoc --source http://gems.opscode.com --source http://gems.rubyforge.org"
+      ssh "#{sudo} apt-get update"
+      ssh "#{sudo} apt-get install -y build-essential zlib1g-dev libssl-dev libreadline5-dev curl rsync"
+      install_rubygems
+      install_chef
     end
 
     def run_for_fedora
       sudo = ssh('which sudo > /dev/null 2>&1') ? 'sudo' : ''
-      ssh "#{sudo} yum install -y make gcc rsync sudo openssl-devel rubygems ruby-devel ruby-shadow"
-      ssh "#{sudo} gem install chef --no-ri --no-rdoc --source http://gems.opscode.com --source http://gems.rubyforge.org"
+      ssh "#{sudo} yum install -y make gcc rsync sudo openssl-devel rubygems ruby-devel ruby-shadow curl"
+    end
+
+    def run_for_centos
+      ssh "#{sudo} yum install -y make gcc rsync sudo openssl-devel curl"
+      install_ruby_1_9_2
+      install_chef
+    end
+
+    def install_ruby_1_9_2
+      ssh "#{sudo} curl -L 'ftp://ftp.ruby-lang.org//pub/ruby/1.9/ruby-1.9.2-p136.tar.gz' | tar xvzf -"
+      ssh "#{sudo} cd ruby-1.9.2-* && ./configure && make && #{sudo} make install"
+    end
+
+    def install_rubygems
+      ssh "curl -L 'http://rubyforge.org/frs/download.php/69365/rubygems-1.3.6.tgz' | tar xvzf -"
+      ssh "cd rubygems* && #{sudo} ruby setup.rb --no-ri --no-rdoc"
+      ssh "#{sudo} ln -sfv /usr/bin/gem1.8 /usr/bin/gem"
+    end
+
+    def install_chef
+      ssh "#{sudo} gem install rdoc chef ohai --no-ri --no-rdoc --source http://gems.opscode.com --source http://gems.rubyforge.org"
+    end
+
+    def sudo
+      ssh('which sudo > /dev/null 2>&1') ? 'sudo' : ''
     end
 
     def upload_ssh_key
