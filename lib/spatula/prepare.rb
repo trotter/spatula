@@ -26,7 +26,7 @@ module Spatula
 
     def run_for_ubuntu
       ssh "#{sudo} apt-get update"
-      ssh "#{sudo} aptitude -y install ruby irb ri libopenssl-ruby1.8 libshadow-ruby1.8 ruby1.8-dev gcc g++ rsync curl"
+      ssh "#{sudo} apt-get install -y ruby irb ri libopenssl-ruby1.8 libshadow-ruby1.8 ruby1.8-dev gcc g++ rsync curl"
       install_rubygems
       install_chef
     end
@@ -50,8 +50,8 @@ module Spatula
     end
 
     def install_ruby_1_9_2
-      ssh "#{sudo} curl -L 'ftp://ftp.ruby-lang.org//pub/ruby/1.9/ruby-1.9.2-p136.tar.gz' | tar xvzf -"
-      ssh "#{sudo} cd ruby-1.9.2-* && ./configure && make && #{sudo} make install"
+      ssh "curl -L 'ftp://ftp.ruby-lang.org//pub/ruby/1.9/ruby-1.9.2-p136.tar.gz' | tar xvzf -"
+      ssh "cd ruby-1.9.2-* && ./configure && make && #{sudo} make install"
     end
 
     def install_rubygems
