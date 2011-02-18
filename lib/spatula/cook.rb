@@ -3,9 +3,10 @@ module Spatula
   REMOTE_CHEF_PATH = "/tmp/chef-solo" # Where to find upstream cookbooks
 
   class Cook < SshCommand
-    def initialize(server, node, port=nil, login=nil, identity=nil)
+    def initialize(server, node, port=nil, login=nil, identity=nil, log_level=nil)
       super(server, port, login, identity)
       @node = node
+      @log_level = log_level
     end
 
     def run
@@ -34,7 +35,7 @@ module Spatula
 
     private
       def chef_cmd
-        "sudo chef-solo -c config/solo.rb -j config/#@node.json"
+        "sudo chef-solo -c config/solo.rb -j config/#@node.json -l #{ @log_level || 'info'}"
       end
   end
 end

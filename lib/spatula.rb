@@ -22,7 +22,7 @@ module Spatula
     def install(name)
       file = JSON.parse(get_version_info(name))["file"]
       filename = File.basename(file)
-      # Use ENV['HOME'] as the base here 
+      # Use ENV['HOME'] as the base here
       tarball_dir = "#{ENV['HOME']}/.spatula/cookbook_tarballs"
       FileUtils.mkdir_p(tarball_dir)
       system "curl #{file} -o #{tarball_dir}/#{filename}"
@@ -36,11 +36,12 @@ module Spatula
     end
 
     desc "cook SERVER NODE", "Cook SERVER with the specification in config/NODE.js. Use local as the server to cook this box."
-    method_options :port => nil 
+    method_options :port => nil
     method_options :login    => nil
     method_options :identity => nil
+    method_options :log_level => nil
     def cook(server, node)
-      Cook.run(server, node, options[:port], options[:login], options[:identity])
+      Cook.run(server, node, options[:port], options[:login], options[:identity], options[:log_level])
     end
 
     desc "prepare SERVER", "Install software/libs required by chef on SERVER"
