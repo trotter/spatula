@@ -14,6 +14,16 @@ module Spatula
         raise "Syntax error in #{recipe}" if not ok
       end
 
+      Dir["**/*.json"].each do |json|
+        begin
+          require 'json'
+          # parse without instantiating Chef classes
+          JSON.parse File.read(json), :create_additions => false
+        rescue => error
+          raise "Syntax error in #{json}: #{error.message}"
+        end
+      end
+
       if @server =~ /^local$/i
         sh chef_cmd
       else
