@@ -55,7 +55,7 @@ module Spatula
     end
 
     def install_rubygems
-      ssh "curl -L 'http://rubyforge.org/frs/download.php/69365/rubygems-1.3.6.tgz' | tar xvzf -"
+      ssh "curl -L 'http://rubyforge.org/frs/download.php/74234/rubygems-1.5.2.tgz' | tar xvzf -"
       ssh "cd rubygems* && #{sudo} ruby setup.rb --no-ri --no-rdoc"
       ssh "#{sudo} ln -sfv /usr/bin/gem1.8 /usr/bin/gem"
     end
