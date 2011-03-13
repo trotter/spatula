@@ -1,6 +1,10 @@
 # Prepare :server: for chef solo to run on it
 module Spatula
   class Prepare < SshCommand
+
+    RUBYGEMS_VERSION = "1.6.2"
+    RUBY_PATH = "1.9/ruby-1.9.2-p180.tar.gz"
+
     def run
       upload_ssh_key if @upload_key
       send "run_for_#{os}"
@@ -50,12 +54,12 @@ module Spatula
     end
 
     def install_ruby_1_9_2
-      ssh "curl -L 'ftp://ftp.ruby-lang.org//pub/ruby/1.9/ruby-1.9.2-p136.tar.gz' | tar xvzf -"
+      ssh "curl -L 'ftp://ftp.ruby-lang.org//pub/ruby/#{RUBY_PATH}' | tar xvzf -"
       ssh "cd ruby-1.9.2-* && ./configure && make && #{sudo} make install"
     end
 
     def install_rubygems
-      ssh "curl -L 'http://rubyforge.org/frs/download.php/69365/rubygems-1.3.6.tgz' | tar xvzf -"
+      ssh "curl -L 'http://production.cf.rubygems.org/rubygems/rubygems-#{RUBYGEMS_VERSION}.tgz' | tar xvzf -"
       ssh "cd rubygems* && #{sudo} ruby setup.rb --no-ri --no-rdoc"
       ssh "#{sudo} ln -sfv /usr/bin/gem1.8 /usr/bin/gem"
     end
