@@ -6,6 +6,11 @@ module Spatula
     RUBY_PATH = "1.9/ruby-1.9.2-p180.tar.gz"
 
     def run
+
+      if @key_file and !@upload_key
+        @upload_key = true
+      end
+
       upload_ssh_key if @upload_key
       send "run_for_#{os}"
     end
@@ -74,15 +79,21 @@ module Spatula
 
     def upload_ssh_key
       authorized_file = "~/.ssh/authorized_keys"
-      key_file = nil
-      %w{rsa dsa}.each do |key_type|
-        filename = "#{ENV['HOME']}/.ssh/id_#{key_type}.pub"
-        if File.exists?(filename)
-          key_file = filename
-          break
+
+      unless @key_file
+        %w{rsa dsa}.each do |key_type|
+          filename = "#{ENV['HOME']}/.ssh/id_#{key_type}.pub"
+          if File.exists?(filename)
+            @key_file = filename
+            break
+          end
         end
       end
-      key = File.open(key_file).read.split(' ')[0..1].join(' ')
+
+      raise "Key file '#{@key_file}' not found: aborting." unless File.exists?(@key_file)
+
+      key = File.open(@key_file).read.split(' ')[0..1].join(' ')
+
       ssh "mkdir -p .ssh && echo #{key} >> #{authorized_file}"
       ssh "cat #{authorized_file} | sort | uniq > #{authorized_file}.tmp && mv #{authorized_file}.tmp #{authorized_file}"
     end
