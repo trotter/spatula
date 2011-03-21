@@ -1,0 +1,5 @@
+Version: 0.0.10
+---------------
+
+- Updated to latest rubygems and ruby (Thanks erikh).
+- Added support for alternate keyfiles using --keyfile (Thanks erikh).
