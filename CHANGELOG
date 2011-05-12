@@ -1,3 +1,9 @@
+Version: 0.0.11
+---------------
+
+- Properly secure ssh files (Thanks hectcastro)
+- Better ubuntu packages (Thanks erikh)
+
 Version: 0.0.10
 ---------------
 
