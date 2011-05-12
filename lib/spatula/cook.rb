@@ -35,7 +35,7 @@ module Spatula
 
     private
       def chef_cmd
-        "sudo chef-solo -c config/solo.rb -j config/#@node.json -l #{ @log_level || 'info'}"
+        "sudo -H -E chef-solo -c config/solo.rb -j config/#@node.json -l #{ @log_level || 'info'}"
       end
   end
 end
