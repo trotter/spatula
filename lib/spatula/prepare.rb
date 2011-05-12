@@ -96,6 +96,7 @@ module Spatula
 
       ssh "mkdir -p .ssh && echo #{key} >> #{authorized_file}"
       ssh "cat #{authorized_file} | sort | uniq > #{authorized_file}.tmp && mv #{authorized_file}.tmp #{authorized_file}"
+      ssh "chmod 0700 .ssh && chmod 0600 #{authorized_file}"
     end
   end
 end
