@@ -1,3 +1,9 @@
+Version: 0.0.12
+---------------
+
+- Add support for arbitrary versions of ruby using
+  the --ruby_version= flag (Thanks matschaffer)
+
 Version: 0.0.11
 ---------------
 

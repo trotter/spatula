@@ -1,4 +1,4 @@
-PKG_VERSION = "0.0.11"
+PKG_VERSION = "0.0.12"
 PKG_FILES   = Dir['README.textile',
                   'bin/*',
                   'lib/**/*.rb']
