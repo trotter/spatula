@@ -3,7 +3,7 @@ module Spatula
   class Prepare < SshCommand
 
     RUBYGEMS_VERSION = "1.6.2"
-    RUBY_PATH = "1.9/ruby-1.9.2-p180.tar.gz"
+    DEFAULT_RUBY_VERSION = "1.9.2-p180"
 
     def run
 
@@ -49,18 +49,27 @@ module Spatula
 
     def run_for_fedora
       sudo = ssh('which sudo > /dev/null 2>&1') ? 'sudo' : ''
-      ssh "#{sudo} yum install -y make gcc rsync sudo openssl-devel rubygems ruby-devel ruby-shadow curl"
+      ssh "#{sudo} yum install -y make gcc gcc-c++ rsync sudo openssl-devel rubygems ruby-devel ruby-shadow curl"
     end
 
     def run_for_centos
-      ssh "#{sudo} yum install -y make gcc rsync sudo openssl-devel curl"
-      install_ruby_1_9_2
+      ssh "#{sudo} yum install -y make gcc gcc-c++ rsync sudo openssl-devel curl"
+      install_ruby
       install_chef
     end
 
-    def install_ruby_1_9_2
-      ssh "curl -L 'ftp://ftp.ruby-lang.org//pub/ruby/#{RUBY_PATH}' | tar xvzf -"
-      ssh "cd ruby-1.9.2-* && ./configure && make && #{sudo} make install"
+    def ruby_version
+      @ruby_version || DEFAULT_RUBY_VERSION
+    end
+
+    def ruby_path
+      rev = ruby_version.match(/^(\d+\.\d+)/)[1]
+      "#{rev}/ruby-#{ruby_version}.tar.gz"
+    end
+
+    def install_ruby
+      ssh "curl -L 'ftp://ftp.ruby-lang.org/pub/ruby/#{ruby_path}' | tar xvzf -"
+      ssh "cd ruby-#{ruby_version} && ./configure && make && #{sudo} make install"
     end
 
     def install_rubygems
