@@ -1,31 +1,20 @@
 # Prepare :server: for chef solo to run on it
 module Spatula
   class Prepare < SshCommand
-
-    RUBYGEMS_VERSION = "1.6.2"
-    DEFAULT_RUBY_VERSION = "1.9.2-p180"
+    DEFAULT_RUBY_VERSION = "1.9.2-p290"
 
     def run
-
-      if @key_file and !@upload_key
-        @upload_key = true
-      end
-
-      upload_ssh_key if @upload_key
+      upload_ssh_key
       send "run_for_#{os}"
     end
 
     def os
       etc_issue = `#{ssh_command("cat /etc/issue")}`
       case etc_issue
-      when /ubuntu/i
-        "ubuntu"
-      when /debian/i
-        "debian"
-      when /fedora/i
-        "fedora"
-      when /CentOS/i
-        "centos"
+      when /ubuntu/i then "apt"
+      when /debian/i then "apt"
+      when /fedora/i then "yum"
+      when /CentOS/i then "yum"
       when ""
         raise "Couldn't get system info from /etc/issue. Please check your SSH credentials."
       else
@@ -33,27 +22,18 @@ module Spatula
       end
     end
 
-    def run_for_ubuntu
-      ssh "#{sudo} apt-get update"
-      ssh "#{sudo} apt-get install -y ruby irb ri libopenssl-ruby1.8 libshadow-ruby1.8 ruby1.8-dev build-essential rsync curl"
-      install_rubygems
+    def run_for_apt
+      ssh_sudo(
+        "apt-get update",
+        "apt-get install -y build-essential zlib1g-dev libssl-dev libreadline5-dev curl rsync git-core")
+      install_ruby_build
+      install_ruby
       install_chef
     end
 
-    def run_for_debian
-      ssh "#{sudo} apt-get update"
-      ssh "#{sudo} apt-get install -y build-essential zlib1g-dev libssl-dev libreadline5-dev curl rsync"
-      install_rubygems
-      install_chef
-    end
-
-    def run_for_fedora
-      sudo = ssh('which sudo > /dev/null 2>&1') ? 'sudo' : ''
-      ssh "#{sudo} yum install -y make gcc gcc-c++ rsync sudo openssl-devel rubygems ruby-devel ruby-shadow curl"
-    end
-
-    def run_for_centos
-      ssh "#{sudo} yum install -y make gcc gcc-c++ rsync sudo openssl-devel curl"
+    def run_for_yum
+      ssh_sudo "yum install -y make gcc gcc-c++ rsync sudo openssl-devel curl git"
+      install_ruby_build
       install_ruby
       install_chef
     end
@@ -63,27 +43,28 @@ module Spatula
     end
 
     def ruby_path
-      rev = ruby_version.match(/^(\d+\.\d+)/)[1]
-      "#{rev}/ruby-#{ruby_version}.tar.gz"
+      if ruby_version =~ /^\d/
+        "/usr/local/ruby-#{ruby_version}"
+      else
+        "/usr/local/#{ruby_version}"
+      end
+    end
+
+    def install_ruby_build
+      ssh(
+        "git clone git://github.com/sstephenson/ruby-build.git",
+        "cd ruby-build && #{sudo} ./install.sh")
     end
 
     def install_ruby
-      ssh "curl -L 'ftp://ftp.ruby-lang.org/pub/ruby/#{ruby_path}' | tar xvzf -"
-      ssh "cd ruby-#{ruby_version} && ./configure && make && #{sudo} make install"
-    end
-
-    def install_rubygems
-      ssh "curl -L 'http://production.cf.rubygems.org/rubygems/rubygems-#{RUBYGEMS_VERSION}.tgz' | tar xvzf -"
-      ssh "cd rubygems* && #{sudo} ruby setup.rb --no-ri --no-rdoc"
-      ssh "#{sudo} ln -sfv /usr/bin/gem1.8 /usr/bin/gem"
+      ssh_sudo(
+        "/usr/local/bin/ruby-build #{ruby_version} #{ruby_path}",
+        "ln -fs #{ruby_path} /usr/local/ruby",
+        %Q{echo "PATH=$PATH:/usr/local/ruby/bin" > ruby_path.sh && sudo cp ruby_path.sh /etc/profile.d/})
     end
 
     def install_chef
-      ssh "#{sudo} gem install rdoc chef ohai --no-ri --no-rdoc --source http://gems.opscode.com --source http://gems.rubyforge.org"
-    end
-
-    def sudo
-      ssh('which sudo > /dev/null 2>&1') ? 'sudo' : ''
+      ssh_sudo "#{ruby_path}/bin/gem install chef --no-ri --no-rdoc"
     end
 
     def upload_ssh_key
@@ -104,8 +85,7 @@ module Spatula
       key = File.open(@key_file).read.split(' ')[0..1].join(' ')
 
       ssh "mkdir -p .ssh && echo #{key} >> #{authorized_file}"
-      ssh "cat #{authorized_file} | sort | uniq > #{authorized_file}.tmp && mv #{authorized_file}.tmp #{authorized_file}"
-      ssh "chmod 0700 .ssh && chmod 0600 #{authorized_file}"
+      ssh "cat #{authorized_file} | sort | uniq > #{authorized_file}.tmp && mv #{authorized_file}.tmp #{authorized_file} && chmod 0700 .ssh && chmod 0600 #{authorized_file}"
     end
   end
 end
