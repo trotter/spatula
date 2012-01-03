@@ -79,7 +79,7 @@ module Spatula
     end
 
     def install_chef
-      ssh "#{sudo} gem install rdoc chef ohai --no-ri --no-rdoc --source http://gems.opscode.com --source http://gems.rubyforge.org"
+      ssh "#{sudo} gem install rdoc chef ohai --no-ri --no-rdoc --source http://gems.rubyforge.org"
     end
 
     def sudo
