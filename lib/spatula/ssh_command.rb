@@ -15,8 +15,18 @@ module Spatula
       @ruby_version = ruby_version
     end
 
-    def ssh(command)
-      sh ssh_command(command)
+    def ssh(*commands)
+      commands.each do |command|
+        sh ssh_command(command)
+      end
+    end
+
+    def sudo
+      ssh('which sudo > /dev/null 2>&1') ? 'sudo' : ''
+    end
+
+    def ssh_sudo(*commands)
+      ssh *(commands.map { |cmd| "#{sudo} #{cmd}" })
     end
 
     def ssh_command(command)
@@ -28,8 +38,9 @@ module Spatula
     end
 
     private
-      def sh(command)
-        system command
-      end
+
+    def sh(command)
+      system command
+    end
   end
 end
